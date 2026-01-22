@@ -2,7 +2,7 @@
 from models import UserQuery, ProcessorResult
 from openai import OpenAI
 from config import settings
-from prompt_templates import get_prompt, validate_prompt_compatibility, get_recommended_settings
+from prompts import SYSTEM_PROMPT, SYSTEM_RAG_PROMPT
 import logging
 import json
 
@@ -34,11 +34,8 @@ class Processor:
             }
         )
         
-        # Validate prompt/model compatibility
-        if not validate_prompt_compatibility(
-            self.prompt_template.name, 
-            settings.model_name
-        ):
+        # Check if current model is in tested_models list
+        if settings.model_name not in self.prompt_template.tested_models:
             logger.warning(
                 "Untested prompt/model combination",
                 extra={
@@ -71,14 +68,14 @@ class Processor:
         Load system prompt from prompts.py module.
         
         Chooses appropriate prompt based on whether RAG is enabled:
-        - RAG enabled: Use "system_rag" prompt (optimized for context)
-        - RAG disabled: Use "system" prompt (general purpose)
+        - RAG enabled: Use SYSTEM_RAG_PROMPT (optimized for context)
+        - RAG disabled: Use SYSTEM_PROMPT (general purpose)
         
         Returns:
             PromptTemplate object with prompt text and metadata
         """
         if settings.enable_retrieval:
-            prompt = get_prompt("system_rag")
+            prompt = SYSTEM_RAG_PROMPT
             logger.debug(
                 "Loaded RAG-optimized prompt",
                 extra={
@@ -87,7 +84,7 @@ class Processor:
                 }
             )
         else:
-            prompt = get_prompt("system")
+            prompt = SYSTEM_PROMPT
             logger.debug(
                 "Loaded standard prompt",
                 extra={
