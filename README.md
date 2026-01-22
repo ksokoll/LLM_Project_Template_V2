@@ -10,6 +10,7 @@ The goal of version 2 is clarity, with fewer moving parts, predictable execution
 3. Prompt is separated from code: I added a prompt library based on the proposal of Chip Huyen in her Book "AI Engineering" Chapter 7. She recommends to separate Prompts and also add a specific pydantic object to track changes, authorship etc.
 4. I intentionally left out: ".env" , ".requirements.txt" and the dockerfiles. It proved not to make sense, as this framework serves as basis and gets enhanced over time, changing the requirements constantly. It's better to create them from scratch after finalizing the project.
 5. Summarized the worker units: Instead of multiple workers, left is only 1 "processor" which can copy-pasted when needed. This serves that the framework is easier to understand, and can be evolved afterwards. The overall codebase is smaller, flatter, and easier to reason about, especially under operational pressure.
+6. Retrieval is now optional: Not all LLM tools use RAG, if yes just activate it, else it can be either de-activated or deleted.
 
 ---
 
